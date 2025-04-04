@@ -1,12 +1,12 @@
-import Header from "./header"
-import Footer from "./footer"
+import { Header } from "../Header"
+import { Footer } from "../Footer"
 import styles from "./layout.module.css"
 
 interface LayoutProps {
   children: React.ReactNode
 }
 
-export default function Layout({ children }: LayoutProps) {
+export function Layout({ children }: LayoutProps) {
   return (
     <div className={styles.layout}>
       <Header />

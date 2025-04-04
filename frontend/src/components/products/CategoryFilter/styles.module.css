@@ -1,0 +1,28 @@
+.filter {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.category {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: #333;
+  background-color: #f3f4f6;
+  transition: all 0.2s ease;
+}
+
+.category:hover {
+  background-color: #e5e7eb;
+}
+
+.active {
+  background-color: #2563eb;
+  color: white;
+}
+
+.active:hover {
+  background-color: #1d4ed8;
+} 

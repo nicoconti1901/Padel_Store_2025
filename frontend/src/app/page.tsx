@@ -1,5 +1,5 @@
-import Hero from "@/components/hero"
-import FeaturedProducts from "@/components/featured-products"
+import { Hero } from "@/components/layout/Hero"
+import { FeaturedProducts } from "@/components/products/FeaturedProducts"
 
 export default function Home() {
   return (

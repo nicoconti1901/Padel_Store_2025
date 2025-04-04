@@ -1,32 +1,29 @@
 "use client"
-
-import { useState, useEffect } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { ShoppingCart } from "lucide-react"
+import { useCart } from "@/hooks/use-cart"
 import styles from "./header.module.css"
 
-export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true)
-      } else {
-        setIsScrolled(false)
-      }
-    }
-
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+export function Header() {
+  const { items } = useCart()
+  const itemCount = items.reduce((total, item) => total + item.quantity, 0)
 
   return (
-    <header className={`${styles.header} ${isScrolled ? styles.scrolled : ""}`}>
+    <header className={styles.header}>
       <div className={styles.container}>
         <Link href="/" className={styles.logo}>
-          Padel Store
+          <Image
+            src="/img/logo.png"
+            alt="Pádel"
+            width={300}
+            height={60}
+            priority
+            className={styles.logoImage}
+            style={{ width: '300px', height: '70px' }}
+          />
         </Link>
+
         <nav className={styles.nav}>
           <Link href="/paletas" className={styles.navLink}>
             Paletas
@@ -38,12 +35,12 @@ export default function Header() {
             Accesorios
           </Link>
         </nav>
+
         <button className={styles.cartButton}>
-          <ShoppingCart size={24} />
-          <span className={styles.cartCount}>0</span>
+          <ShoppingCart className={styles.cartIcon} />
+          <span className={styles.cartCount}>{itemCount}</span>
         </button>
       </div>
     </header>
   )
-}
-
+} 

@@ -10,6 +10,7 @@ export interface BaseProduct {
   en_oferta: boolean
   descuento: number
   fecha_creacion: string
+  uniqueId?: string
 }
 
 // Specific product types
@@ -43,5 +44,6 @@ export interface FeaturedProduct {
   descuento: number
   es_nuevo: boolean
   categoria: "Palas" | "Zapatillas" | "Ropa" | "Accesorios"
+  uniqueId: string
 }
 

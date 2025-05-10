@@ -11,9 +11,7 @@ export function Layout({ children }: LayoutProps) {
     <div className={styles.layout}>
       <Header />
       <main className={styles.main}>
-        <div className={styles.container}>
-          {children}
-        </div>
+        {children}
       </main>
       <Footer />
     </div>

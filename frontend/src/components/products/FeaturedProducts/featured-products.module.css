@@ -1,6 +1,5 @@
 .section {
   padding: 4rem 0;
-  background-color: var(--color-background);
   overflow: hidden;
   position: relative;
 }
@@ -8,24 +7,45 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 2rem;
   position: relative;
   z-index: 1;
+  background: transparent;
+  /* Quitar border y box-shadow si no se necesita separación visual fuerte */
+  /* border-radius: 16px; */
+  /* box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15); */
+  /* border: 1px solid rgba(152, 201, 163, 0.1); */
 }
 
 .title {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1A4D3C; /* Verde oscuro principal para el título */
   text-align: center;
-  color: var(--color-text);
+  margin-bottom: 3rem;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: #E31837; /* Rojo de acento */
+  border-radius: 2px;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
-  margin-top: 2rem;
+  position: relative;
+  z-index: 1;
 }
 
 .loading {
@@ -43,34 +63,63 @@
 }
 
 .featuredProducts {
-  padding: 3rem 0;
-  background-color: var(--color-background);
-  position: relative;
+  padding: 4rem 0;
+  position: relative; /* Necesario para el z-index de la imagen de fondo */
+  background: linear-gradient(
+    135deg,
+    rgba(245, 245, 245, 0.98) 0%,
+    rgba(230, 235, 232, 0.98) 100%
+  );
+  overflow: hidden;
+}
 
+/* Ya no se usa la clase .container de este archivo, 
+   usamos layoutStyles.container en el componente. 
+   Puedes eliminar esta regla o mantenerla por si la necesitas luego. */
+/* 
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  position: relative;
+  z-index: 1;
+}
+*/
+
+/* Estilos adicionales para el contenedor de contenido si son necesarios */
+.contentContainer {
+  position: relative; /* Para asegurar que el contenido esté sobre la imagen */
+  z-index: 1;
 }
 
 .backgroundImage {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  /* Los estilos principales (width, height, top, left) vienen de fill */
+  position: absolute; 
   object-fit: cover;
-  opacity: 0.9;
-  z-index: 0;
-  filter: brightness(0.8) contrast(1.1);
+  opacity: 0.05; 
+  z-index: 0; /* Detrás del .contentContainer */
+  pointer-events: none;
+  filter: contrast(1.1) brightness(0.9);
 }
+
 @media (max-width: 768px) {
   .featuredProducts {
-    padding: 3rem 0;
+    padding: 2rem 0;
   }
 
+  /* El .contentContainer (que usa layoutStyles.container) se encarga del padding */
+  /* .container {
+    padding: 1.5rem;
+    margin: 0 1rem; 
+  } */
+
   .title {
-    font-size: 1.5rem;
+    font-size: 2rem;
+    margin-bottom: 2rem;
   }
 
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
   }
 } 

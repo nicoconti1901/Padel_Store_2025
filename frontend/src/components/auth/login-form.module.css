@@ -1,0 +1,158 @@
+/* frontend/src/components/auth/login-form.module.css */
+
+.loginContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 160px);
+  padding: 2rem;
+  background: rgba(26, 77, 60, 0.05);
+  backdrop-filter: blur(8px);
+}
+
+.loginForm {
+  width: 100%;
+  max-width: 400px;
+  padding: 2.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(152, 201, 163, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(152, 201, 163, 0.2);
+  margin-top: 60px;
+}
+
+.title {
+  color: #1A4D3C;
+  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  text-align: center;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #1A4D3C;
+  font-weight: 500;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.inputField {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(152, 201, 163, 0.3);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+}
+
+.inputField:focus {
+  outline: none;
+  border-color: #1A4D3C;
+  box-shadow: 0 0 0 3px rgba(152, 201, 163, 0.2);
+  background: white;
+}
+
+.inputField:disabled {
+  background-color: rgba(152, 201, 163, 0.1);
+  cursor: not-allowed;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 0.75rem;
+  background: #1A4D3C;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.submitButton:hover {
+  background: #143a2d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 77, 60, 0.2);
+}
+
+.submitButton:disabled {
+  background-color: rgba(152, 201, 163, 0.5);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.errorMessage {
+  margin-bottom: 1.5rem;
+  padding: 0.75rem;
+  background-color: rgba(227, 24, 55, 0.1);
+  border: 1px solid rgba(227, 24, 55, 0.2);
+  border-radius: 8px;
+  color: #E31837;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+/* frontend/src/app/login/login-page.module.css */
+/* (Puedes poner estos estilos en un archivo separado como se hizo) */
+.loginBox {
+  background-color: white;
+  padding: 2.5rem 3rem;
+  border-radius: 8px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+}
+
+.loginContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 160px); /* Ajusta según altura de header/footer */
+  padding: 2rem;
+  background-color: #f4f7f6; /* Un fondo muy claro */
+}
+
+.loginBox {
+  background-color: white;
+  padding: 2.5rem 3rem;
+  border-radius: 8px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+}
+
+.title {
+  color: #1A4D3C; /* Verde principal */
+  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+}
+
+.subtitle {
+  color: #666; /* Gris oscuro */
+  margin-bottom: 2rem;
+  font-size: 1rem;
+} 

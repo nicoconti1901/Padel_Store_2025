@@ -1,0 +1,44 @@
+/* Dejamos los estilos específicos en el CSS del componente AdminProductList por ahora */
+/* Puedes añadir estilos generales para la página aquí si es necesario */
+
+.main {
+  padding: 2rem;
+  padding-top: 100px; /* Añadimos espacio para el navbar */
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  color: #1A4D3C;
+  margin: 0;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.createButton {
+  background-color: #1A4D3C;
+  color: white;
+  border: 2px solid white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+
+.createButton:hover {
+  background-color: #143a2d;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(26, 77, 60, 0.2);
+} 

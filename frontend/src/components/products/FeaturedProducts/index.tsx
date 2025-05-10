@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import { Product } from "@/types/types"
 import { ProductCard } from "../ProductCard"
 import styles from "./featured-products.module.css"
+// Importar los estilos del layout para usar el contenedor
+import layoutStyles from "@/components/layout/Layout/layout.module.css";
 
 export function FeaturedProducts() {
   const [products, setProducts] = useState<Product[]>([])
@@ -30,10 +32,14 @@ export function FeaturedProducts() {
           es_nuevo: Boolean(product.es_nuevo),
           en_oferta: Boolean(product.en_oferta),
           marca: product.marca || "",
+          modelo: product.modelo || "", // Asegurar modelo
+          caracteristicas: product.caracteristicas || "", // Asegurar caracteristicas
           stock: Number(product.stock) || 0,
           fecha_creacion: product.fecha_creacion || new Date().toISOString(),
           tipo: product.tipo || "",
           talle: product.talle || "",
+          imagen: product.imagen || "", // Asegurar imagen
+          id: product.id || `temp-id-${index}`,
           uniqueId: `${product.categoria}-${product.id}-${index}` // Añadimos un índice único
         }))
         
@@ -61,28 +67,30 @@ export function FeaturedProducts() {
   }
 
   return (
-    
+    // La sección ahora ocupa el ancho completo por defecto
     <section className={styles.featuredProducts}>
-      <div className={styles.container}>
+      {/* La imagen de fondo interna se posiciona relativa a esta sección */}
+      <Image
+        src="/img/fondo2.webp"
+        alt="Pádel Background"
+        fill // Usar fill para que cubra la sección
+        className={styles.backgroundImage}
+        priority
+      />
+      {/* Este div centra el contenido interno */}
+      <div className={`${layoutStyles.container} ${styles.contentContainer}`}> 
         <h2 className={styles.title}>Productos Destacados</h2>
         <div className={styles.grid}>
           {products.map((product) => (
             <ProductCard
-              key={`${product.categoria}-${product.id}`}
+              // Usar uniqueId si está disponible y es estable, sino construir uno
+              key={product.uniqueId || `${product.categoria}-${product.id}`}
               product={product}
               onAddToCart={handleAddToCart}
             />
           ))}
         </div>
       </div>
-      <Image
-        src="/img/fondo2.webp"
-        alt="Pádel"
-        width={1920}
-        height={1580}
-        className={styles.backgroundImage}
-        priority
-      />
     </section>
   )
 } 

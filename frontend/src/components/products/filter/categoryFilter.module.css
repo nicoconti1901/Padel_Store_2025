@@ -1,0 +1,47 @@
+.filterContainer {
+    padding: 1rem;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.categories {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.categoryButton {
+    padding: 0.75rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    background-color: white;
+    color: #4b5563;
+    font-size: 1rem;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.categoryButton:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+}
+
+.categoryButton.active {
+    background-color: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+.categoryButton.active:hover {
+    background-color: #1d4ed8;
+    border-color: #1d4ed8;
+} 

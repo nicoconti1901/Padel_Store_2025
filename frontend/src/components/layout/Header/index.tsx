@@ -43,7 +43,9 @@ export function Header() {
             Accesorios
           </Link>
           {isAuthenticated && isAdmin && (
-            <Link href="/admin/products" className={styles.navLinkAdmin}>Admin</Link>
+            <Link href="/admin/products" className={styles.navLinkAdmin}>
+              Administración
+            </Link>
           )}
         </nav>
 

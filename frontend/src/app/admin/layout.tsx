@@ -1,20 +1,59 @@
-import React, { ReactNode } from 'react';
-import AdminRouteGuard from '@/components/auth/AdminRouteGuard';
+'use client';
 
-interface AdminLayoutProps {
-  children: ReactNode;
-}
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import styles from './admin.module.css';
+import Link from 'next/link';
 
-// Este layout se aplica a todas las rutas dentro de /admin
-export default function AdminLayout({ children }: AdminLayoutProps) {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { isAuthenticated, isAdmin, isLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (!isAuthenticated) {
+        console.log('Usuario no autenticado, redirigiendo a login');
+        router.push('/login');
+      } else if (!isAdmin) {
+        console.log('Usuario no es admin, redirigiendo a home');
+        router.push('/');
+      }
+    }
+  }, [isLoading, isAuthenticated, isAdmin, router]);
+
+  if (isLoading) {
+    return <div>Cargando...</div>;
+  }
+
+  if (!isAuthenticated || !isAdmin) {
+    return null;
+  }
+
   return (
-    <AdminRouteGuard>
-      {/* Aquí podrías tener un sub-layout específico para admin si quisieras, */} 
-      {/* como una barra lateral de navegación de admin */} 
-      {/* Por ahora, simplemente renderizamos el contenido protegido */} 
-      <div style={{ padding: '2rem' }}> {/* Añade algo de padding base para las páginas admin */} 
+    <div className={styles.adminLayout}>
+      <nav className={styles.adminNav}>
+        <h1>Panel de Administración</h1>
+        <ul>
+          <li>
+            <Link href="/admin/products" className={styles.adminLink}>
+              Productos
+            </Link>
+          </li>
+          <li>
+            <Link href="/admin/products/create" className={styles.adminLink}>
+              Crear Producto
+            </Link>
+          </li>
+        </ul>
+      </nav>
+      <main className={styles.adminContent}>
         {children}
-      </div>
-    </AdminRouteGuard>
+      </main>
+    </div>
   );
 } 

@@ -22,7 +22,7 @@ const LoginForm: React.FC = () => {
       console.log('Intentando login con:', { email });
       await login({ email, password });
       console.log('Login exitoso, redirigiendo...');
-      router.push('/admin/products');
+      router.push('/');
     } catch (err) {
       console.error('Error detallado en login:', err);
       if (err instanceof Error) {

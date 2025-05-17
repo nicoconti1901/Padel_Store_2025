@@ -18,10 +18,10 @@
   border-radius: 16px;
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(152, 201, 163, 0.1);
-  backdrop-filter: blur(8px);
+    0 0 0 1px rgba(8, 8, 8, 0.1);
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(152, 201, 163, 0.2);
-  margin-top: 60px;
+  margin-top: 90px;
 }
 
 .title {

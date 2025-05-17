@@ -116,7 +116,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
           <div className="mb-6">
             <h3 className="font-semibold mb-2">Descripción:</h3>
-            <p className="text-gray-700">{product.descripcion}</p>
+            <p className="text-gray-700">{product.caracteristicas}</p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">

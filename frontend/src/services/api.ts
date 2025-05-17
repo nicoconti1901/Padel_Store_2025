@@ -14,17 +14,25 @@ async function handleResponse<T>(response: Response): Promise<T> {
 // Función auxiliar para transformar los datos del producto
 const transformProduct = (product: any, categoria: ProductCategory): Product => {
   const baseProduct = {
-    ...product,
+    id: product._id || product.id,
+    marca: product.marca_nombre || product.marca?.nombre || product.marca || '',
+    modelo: product.nombre || product.modelo || '',
     precio: Number(product.precio),
     precio_original: Number(product.precio_original) || Number(product.precio),
     descuento: Number(product.descuento) || 0,
     es_nuevo: Boolean(product.es_nuevo),
     en_oferta: Boolean(product.en_oferta),
     stock: Number(product.stock) || 0,
-    categoria
+    imagen: product.imagen || '/placeholder.svg',
+    caracteristicas: product.caracteristicas || '',
+    categoria: product.categoria || categoria,
+    marca_id: product.marca?._id || product.marca_id,
+    categoria_id: product.categoria?._id || product.categoria_id,
+    fecha_creacion: product.fecha_creacion || new Date().toISOString()
   };
 
-  switch (categoria) {
+  const productCategoria = baseProduct.categoria.toLowerCase();
+  switch (productCategoria) {
     case 'paletas':
       return baseProduct as Paleta;
     case 'indumentaria':
@@ -39,7 +47,7 @@ const transformProduct = (product: any, categoria: ProductCategory): Product => 
         tipo: product.tipo || ''
       } as Accesorio;
     default:
-      throw new Error('Categoría no válida');
+      throw new Error(`Categoría no válida: ${productCategoria}`);
   }
 };
 
@@ -54,10 +62,7 @@ export const productService = {
         throw new Error(errorData.message || 'Error al obtener producto');
       }
       const data = await response.json();
-      return {
-        ...data,
-        categoria
-      };
+      return transformProduct(data, categoria);
     } catch (error) {
       console.error('Error al obtener producto:', error);
       throw error;
@@ -65,28 +70,13 @@ export const productService = {
   },
 
   // Obtener productos por categoría
-  async getProductsByCategory(category: string): Promise<Product[]> {
+  async getProductsByCategory(category: ProductCategory): Promise<Product[]> {
     try {
       const response = await axios.get(`${API_URL}/products/${category}`);
       if (!response.data) {
         throw new Error('No se recibieron datos del servidor');
       }
-      const transformedProducts = response.data.map((product: any) => ({
-        id: product._id || product.id,
-        marca: product.marca || product.name,
-        modelo: product.modelo || '',
-        precio: product.precio || product.price,
-        caracteristicas: product.caracteristicas || product.description || '',
-        stock: product.stock || 0,
-        imagen: product.imagen || product.image || '/placeholder.svg',
-        es_nuevo: product.es_nuevo || false,
-        en_oferta: product.en_oferta || false,
-        descuento: product.descuento || 0,
-        categoria: category as ProductCategory,
-        tipo: product.tipo || '',
-        talle: product.talle || ''
-      }));
-      return transformedProducts;
+      return response.data.map((product: any) => transformProduct(product, category));
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('Error de conexión:', error.message);
@@ -98,20 +88,49 @@ export const productService = {
 
   // Obtener productos destacados
   async getFeaturedProducts(): Promise<Product[]> {
-    const response = await fetch(`${API_URL}/featured`);
-    const data = await handleResponse<any[]>(response);
-    return data.map(product => transformProduct(product, product.categoria));
+    try {
+      const response = await axios.get(`${API_URL}/products/featured`);
+      if (!response.data) {
+        throw new Error('No se recibieron datos del servidor');
+      }
+      return response.data.map((product: any) => transformProduct(product, product.categoria));
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error('Error de conexión:', error.message);
+        throw new Error(`Error al conectar con el backend: ${error.message}`);
+      }
+      throw error;
+    }
   },
 
   // Crear un nuevo producto
   async createProduct(product: Omit<Product, 'id'>, categoria: ProductCategory): Promise<Product> {
     try {
+      // Transformar los datos para que coincidan con el backend
+      const productData = {
+        nombre: product.modelo, // Siempre usar modelo como nombre
+        descripcion: product.caracteristicas, // Convertir caracteristicas a descripcion
+        precio: product.precio,
+        precio_original: product.precio_original,
+        descuento: product.descuento,
+        es_nuevo: product.es_nuevo,
+        en_oferta: product.en_oferta,
+        stock: product.stock,
+        imagen: product.imagen,
+        marca_id: product.marca_id, // Usar marca_id directamente
+        tipo: product.tipo,
+        talle: product.talle
+      };
+
+      console.log('Datos a enviar al backend:', productData); // Agregar log para debug
+
       const response = await fetch(`${API_URL}/products/${categoria}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify(product),
+        body: JSON.stringify(productData),
         credentials: 'include'
       });
       if (!response.ok) {
@@ -119,10 +138,7 @@ export const productService = {
         throw new Error(errorData.message || 'Error al crear producto');
       }
       const data = await response.json();
-      return {
-        ...data,
-        categoria
-      };
+      return transformProduct(data, categoria);
     } catch (error) {
       console.error('Error al crear producto:', error);
       throw error;
@@ -136,6 +152,7 @@ export const productService = {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(product),
         credentials: 'include'
@@ -145,10 +162,7 @@ export const productService = {
         throw new Error(errorData.message || 'Error al actualizar producto');
       }
       const data = await response.json();
-      return {
-        ...data,
-        categoria
-      };
+      return transformProduct(data, categoria);
     } catch (error) {
       console.error('Error al actualizar producto:', error);
       throw error;
@@ -160,6 +174,9 @@ export const productService = {
     try {
       const response = await fetch(`${API_URL}/products/${categoria}/${id}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
         credentials: 'include'
       });
       if (!response.ok) {
@@ -168,6 +185,21 @@ export const productService = {
       }
     } catch (error) {
       console.error('Error al eliminar producto:', error);
+      throw error;
+    }
+  },
+
+  // Obtener todas las marcas
+  async getBrands(): Promise<{ id: number; nombre: string }[]> {
+    try {
+      const response = await fetch(`${API_URL}/brands`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Error al obtener marcas');
+      }
+      return response.json();
+    } catch (error) {
+      console.error('Error al obtener marcas:', error);
       throw error;
     }
   }

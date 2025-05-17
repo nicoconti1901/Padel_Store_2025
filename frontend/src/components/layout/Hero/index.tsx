@@ -15,7 +15,7 @@ export function Hero() {
           <p className={styles.subtitle}>
             Las mejores paletas, indumentaria y accesorios para jugadores de todos los niveles
           </p>
-          <Link href="/paletas" className={styles.cta}>
+          <Link href="/products/all" className={styles.cta}>
             Ver productos
           </Link>
         </div>

@@ -4,28 +4,16 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import styles from './products.module.css';
-
-interface Product {
-  id: number;
-  nombre: string;
-  descripcion: string;
-  precio: number;
-  precio_original: number;
-  imagen: string;
-  en_oferta: boolean;
-  descuento: number;
-  es_nuevo: boolean;
-  marca_id: number;
-  categoria_id: number;
-  marca_nombre?: string;
-  categoria_nombre?: string;
-}
+import { Product, ProductCategory } from '@/types/product';
+import { productService } from '@/services/api';
 
 export default function ProductsPage() {
   const { isAuthenticated, isAdmin } = useAuth();
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<ProductCategory>('paletas');
 
   useEffect(() => {
     if (!isAuthenticated || !isAdmin) {
@@ -35,77 +23,83 @@ export default function ProductsPage() {
 
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/products');
-        if (!response.ok) throw new Error('Error al cargar productos');
-        const data = await response.json();
+        setLoading(true);
+        setError(null);
+        const data = await productService.getProductsByCategory(selectedCategory);
         setProducts(data);
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error al cargar productos:', error);
+        setError(error instanceof Error ? error.message : 'Error al cargar productos');
       } finally {
         setLoading(false);
       }
     };
 
     fetchProducts();
-  }, [isAuthenticated, isAdmin, router]);
+  }, [isAuthenticated, isAdmin, router, selectedCategory]);
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (!confirm('¿Estás seguro de que deseas eliminar este producto?')) return;
 
     try {
-      const response = await fetch(`http://localhost:3001/api/products/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) throw new Error('Error al eliminar producto');
-
-      setProducts(products.filter(product => product.id !== id));
+      await productService.deleteProduct(id, selectedCategory);
+      setProducts(products.filter(product => product.id.toString() !== id));
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error al eliminar producto:', error);
       alert('Error al eliminar el producto');
     }
   };
 
   if (loading) {
-    return <div>Cargando productos...</div>;
+    return <div className={styles.loading}>Cargando productos...</div>;
+  }
+
+  if (error) {
+    return <div className={styles.error}>{error}</div>;
   }
 
   return (
     <div className={styles.container}>
-      <h1>Administración de Productos</h1>
-      <div className={styles.actions}>
-        <button 
-          className={styles.createButton}
-          onClick={() => router.push('/admin/products/create')}
+      <h1 className={styles.title}>Administración de Productos</h1>
+      
+      <div className={styles.categorySelector}>
+        <select 
+          value={selectedCategory} 
+          onChange={(e) => setSelectedCategory(e.target.value as ProductCategory)}
+          className={styles.select}
         >
-          Crear Nuevo Producto
-        </button>
+          <option value="paletas">Paletas</option>
+          <option value="indumentaria">Indumentaria</option>
+          <option value="accesorios">Accesorios</option>
+        </select>
       </div>
-      <div className={styles.productsList}>
+
+      <div className={styles.productGrid}>
         {products.map((product) => (
           <div key={product.id} className={styles.productCard}>
-            <h3>{product.nombre}</h3>
-            <p><strong>Categoría:</strong> {product.categoria_nombre}</p>
-            <p><strong>Marca:</strong> {product.marca_nombre}</p>
-            <p><strong>Precio:</strong> ${product.precio}</p>
-            {product.en_oferta && (
-              <p><strong>Precio Original:</strong> ${product.precio_original}</p>
-            )}
-            <p><strong>Descuento:</strong> {product.descuento}%</p>
-            <p><strong>Estado:</strong> {product.es_nuevo ? 'Nuevo' : 'Usado'}</p>
-            <div className={styles.productActions}>
-              <button
-                className={styles.editButton}
-                onClick={() => router.push(`/admin/products/edit/${product.id}`)}
-              >
-                Editar
-              </button>
-              <button
-                className={styles.deleteButton}
-                onClick={() => handleDelete(product.id)}
-              >
-                Eliminar
-              </button>
+            <img 
+              src={product.imagen} 
+              alt={product.modelo} 
+              className={styles.productImage}
+            />
+            <div className={styles.productInfo}>
+              <h3>{product.marca} - {product.modelo}</h3>
+              <p>Precio: ${product.precio}</p>
+              <p>Stock: {product.stock}</p>
+              <div className={styles.actions}>
+                <button 
+                  onClick={() => router.push(`/admin/products/edit/${selectedCategory}/${product.id}`)}
+                  className={styles.editButton}
+                >
+                  Editar
+                </button>
+                <button 
+                  onClick={() => handleDelete(product.id.toString())}
+                  className={styles.deleteButton}
+                >
+                  Eliminar
+                </button>
+              </div>
             </div>
           </div>
         ))}

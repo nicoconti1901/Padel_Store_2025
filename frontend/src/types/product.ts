@@ -2,9 +2,12 @@ export type ProductCategory = 'paletas' | 'indumentaria' | 'accesorios';
 
 export interface BaseProduct {
   id: number;
-  marca: string;
+  marca?: string;
+  marca_id: number;
+  nombre?: string;
   modelo: string;
   precio: number;
+  precio_original: number;
   caracteristicas: string;
   stock: number;
   imagen: string;

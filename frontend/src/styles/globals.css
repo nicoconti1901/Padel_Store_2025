@@ -1,26 +1,29 @@
 :root {
-  --color-primary: #2563eb;
-  --color-primary-dark: #10172c;
-  --color-accent: #4f46e5;
-  --color-accent-dark: #4338ca;
-  --color-background: #a4c0dc;
-  --color-text: #1e293b;
-  --color-text-light: #64748b;
-  --color-error: #ef4444;
-  --color-success: #22c55e;
-  --color-white: #ffffff;
-  --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
-  --color-gray-300: #d1d5db;
-  --color-gray-400: #9ca3af;
-  --color-gray-500: #6b7280;
-  --color-gray-600: #4b5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1f2937;
-  --color-gray-900: #111827;
-
-  --gradient-primary: linear-gradient(100deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  /* Colores principales */
+  --color-primary: #E31837;  /* Rojo deportivo */
+  --color-primary-dark: #B30000;  /* Rojo oscuro */
+  --color-accent: #FF4B2B;  /* Naranja vibrante */
+  --color-accent-dark: #E31837;  /* Rojo deportivo */
+  
+  /* Colores de fondo */
+  --color-background: #000000;  /* Negro puro */
+  --color-surface: #1A1A1A;  /* Negro elegante */
+  --color-surface-light: #2D2D2D;  /* Gris muy oscuro */
+  
+  /* Colores de texto */
+  --color-text: #FFFFFF;  /* Blanco */
+  --color-text-light: #B3B3B3;  /* Gris claro */
+  --color-text-muted: #808080;  /* Gris medio */
+  
+  /* Colores de estado */
+  --color-error: #E31837;  /* Rojo error */
+  --color-success: #00C851;  /* Verde éxito */
+  --color-warning: #FFB800;  /* Amarillo advertencia */
+  
+  /* Gradientes */
+  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   --gradient-accent: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+  --gradient-surface: linear-gradient(145deg, var(--color-surface) 0%, var(--color-surface-light) 100%);
 }
 
 * {
@@ -33,9 +36,9 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  background-color: #1A4D3C;
+  background-color: var(--color-background);
   color: var(--color-text);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
 }
 

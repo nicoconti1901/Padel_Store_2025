@@ -3,27 +3,55 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { productService } from '@/services/api';
+import { ProductCategory } from '@/types/product';
 import styles from './create.module.css';
+
+interface Brand {
+  id: number;
+  nombre: string;
+}
 
 export default function CreateProductPage() {
   const router = useRouter();
   const { isAdmin, isLoading, isAuthenticated } = useAuth();
+  const [brands, setBrands] = useState<Brand[]>([]);
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    price: '',
+    modelo: '',
+    caracteristicas: '',
+    precio: '',
+    precio_original: '',
+    descuento: '0',
     stock: '',
-    category: 'paletas',
-    image: '',
-    brand: '',
+    categoria: 'paletas' as ProductCategory,
+    imagen: '',
+    marca_id: '',
+    es_nuevo: true,
+    en_oferta: false,
+    tipo: '',
     talle: ''
   });
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isLoading && (!isAuthenticated || !isAdmin)) {
       router.push('/');
     }
   }, [isLoading, isAuthenticated, isAdmin, router]);
+
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const brandsData = await productService.getBrands();
+        setBrands(brandsData);
+      } catch (error) {
+        console.error('Error al cargar marcas:', error);
+        setError('Error al cargar las marcas');
+      }
+    };
+    fetchBrands();
+  }, []);
 
   if (isLoading) {
     return <div>Cargando...</div>;
@@ -35,69 +63,105 @@ export default function CreateProductPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const response = await fetch('http://localhost:3001/api/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+    setError(null);
+    setSuccess(null);
 
-      if (response.ok) {
-        router.push('/admin/products');
-      } else {
-        console.error('Error al crear el producto');
-      }
+    try {
+      const productData = {
+        ...formData,
+        nombre: formData.modelo,
+        precio: Number(formData.precio),
+        precio_original: Number(formData.precio_original),
+        descuento: Number(formData.descuento),
+        stock: Number(formData.stock),
+        marca_id: Number(formData.marca_id),
+        fecha_creacion: new Date().toISOString()
+      };
+
+      await productService.createProduct(productData, formData.categoria);
+      setSuccess('Producto agregado correctamente');
+      
+      // Esperar 2 segundos antes de redirigir para que el usuario vea el mensaje
+      setTimeout(() => {
+        router.push('/');
+      }, 2000);
     } catch (error) {
       console.error('Error:', error);
+      setError(error instanceof Error ? error.message : 'Error al crear el producto');
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
     }));
   };
 
   return (
     <div className={styles.container}>
       <h1>Crear Nuevo Producto</h1>
+      {error && <div className={styles.error}>{error}</div>}
+      {success && <div className={styles.success}>{success}</div>}
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.formGroup}>
-          <label htmlFor="name">Nombre</label>
+          <label htmlFor="modelo">Modelo</label>
           <input
             type="text"
-            id="name"
-            name="name"
-            value={formData.name}
+            id="modelo"
+            name="modelo"
+            value={formData.modelo}
             onChange={handleChange}
             required
           />
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="description">Descripción</label>
+          <label htmlFor="caracteristicas">Características</label>
           <textarea
-            id="description"
-            name="description"
-            value={formData.description}
+            id="caracteristicas"
+            name="caracteristicas"
+            value={formData.caracteristicas}
             onChange={handleChange}
             required
           />
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="price">Precio</label>
+          <label htmlFor="precio">Precio</label>
           <input
             type="number"
-            id="price"
-            name="price"
-            value={formData.price}
+            id="precio"
+            name="precio"
+            value={formData.precio}
             onChange={handleChange}
             required
+          />
+        </div>
+
+        <div className={styles.formGroup}>
+          <label htmlFor="precio_original">Precio Original</label>
+          <input
+            type="number"
+            id="precio_original"
+            name="precio_original"
+            value={formData.precio_original}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className={styles.formGroup}>
+          <label htmlFor="descuento">Descuento (%)</label>
+          <input
+            type="number"
+            id="descuento"
+            name="descuento"
+            value={formData.descuento}
+            onChange={handleChange}
+            min="0"
+            max="100"
           />
         </div>
 
@@ -114,11 +178,11 @@ export default function CreateProductPage() {
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="category">Categoría</label>
+          <label htmlFor="categoria">Categoría</label>
           <select
-            id="category"
-            name="category"
-            value={formData.category}
+            id="categoria"
+            name="categoria"
+            value={formData.categoria}
             onChange={handleChange}
             required
           >
@@ -129,30 +193,60 @@ export default function CreateProductPage() {
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="brand">Marca</label>
+          <label htmlFor="marca_id">Marca</label>
+          <select
+            id="marca_id"
+            name="marca_id"
+            value={formData.marca_id}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Seleccione una marca</option>
+            {brands.map((brand) => (
+              <option key={brand.id} value={brand.id}>
+                {brand.nombre}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className={styles.formGroup}>
+          <label htmlFor="imagen">URL de la imagen</label>
           <input
-            type="text"
-            id="brand"
-            name="brand"
-            value={formData.brand}
+            type="url"
+            id="imagen"
+            name="imagen"
+            value={formData.imagen}
             onChange={handleChange}
             required
           />
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="image">URL de la imagen</label>
-          <input
-            type="url"
-            id="image"
-            name="image"
-            value={formData.image}
-            onChange={handleChange}
-            required
-          />
+          <label>
+            <input
+              type="checkbox"
+              name="es_nuevo"
+              checked={formData.es_nuevo}
+              onChange={handleChange}
+            />
+            Es nuevo
+          </label>
         </div>
 
-        {formData.category === 'indumentaria' && (
+        <div className={styles.formGroup}>
+          <label>
+            <input
+              type="checkbox"
+              name="en_oferta"
+              checked={formData.en_oferta}
+              onChange={handleChange}
+            />
+            En oferta
+          </label>
+        </div>
+
+        {formData.categoria === 'indumentaria' && (
           <div className={styles.formGroup}>
             <label htmlFor="talle">Talle</label>
             <input
@@ -160,6 +254,20 @@ export default function CreateProductPage() {
               id="talle"
               name="talle"
               value={formData.talle}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        )}
+
+        {(formData.categoria === 'indumentaria' || formData.categoria === 'accesorios') && (
+          <div className={styles.formGroup}>
+            <label htmlFor="tipo">Tipo</label>
+            <input
+              type="text"
+              id="tipo"
+              name="tipo"
+              value={formData.tipo}
               onChange={handleChange}
               required
             />

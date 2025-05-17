@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth';
 import productRoutes from './routes/productRoutes';
+import brandRoutes from './routes/brandRoutes';
 import { testConnection } from './config/database';
 
 // Cargar variables de entorno
@@ -30,6 +31,7 @@ app.use(express.json());
 // Rutas
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/brands', brandRoutes);
 
 // Ruta de prueba
 app.get('/api/paletas', (req, res) => {

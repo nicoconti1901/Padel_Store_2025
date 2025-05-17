@@ -1,5 +1,5 @@
 .filterContainer {
-    padding: 1rem;
+    padding: 1.5rem;
     background-color: white;
     border-radius: 0.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -12,7 +12,16 @@
     margin-bottom: 1rem;
 }
 
+.separator {
+    margin: 1.5rem 0;
+}
+
+/* Categorías */
 .categories {
+    margin-bottom: 1.5rem;
+}
+
+.categoryButtons {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -44,4 +53,66 @@
 .categoryButton.active:hover {
     background-color: #1d4ed8;
     border-color: #1d4ed8;
+}
+
+/* Filtros */
+.filters {
+    margin-top: 1.5rem;
+}
+
+.section {
+    margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #4b5563;
+    margin-bottom: 0.75rem;
+}
+
+/* Rango de Precio */
+.priceRange {
+    padding: 0 0.5rem;
+}
+
+.slider {
+    margin: 1rem 0;
+}
+
+.priceLabels {
+    display: flex;
+    justify-content: space-between;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* Marcas */
+.brands {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.brandLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: #4b5563;
+}
+
+/* Opciones */
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.optionLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: #4b5563;
 } 

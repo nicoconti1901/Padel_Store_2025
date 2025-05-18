@@ -59,7 +59,7 @@
 
 .cta {
   display: inline-block;
-  background: linear-gradient(45deg, #e31837, #ff2d4a);
+  background: var(--color-primary);
   color: white;
   padding: 1rem 2rem;
   border-radius: 12px;
@@ -79,8 +79,8 @@
 
 .cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(227, 24, 55, 0.4);
-  background: linear-gradient(45deg, #ff2d4a, #e31837);
+  box-shadow: 0 6px 20px rgba(9, 9, 9, 0.4);
+  background: linear-gradient(45deg, #e17c1e, #d67c0e);
 }
 
 .backgroundImage {

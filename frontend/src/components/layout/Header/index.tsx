@@ -30,7 +30,27 @@ export function Header() {
             style={{ marginRight: "0.7rem" }}
             priority
           />
-          <span className={styles.logoText}>X3 PADEL</span>
+          <span className={styles.logoText}>
+            {Array.from("X3-PADEL").map((char, index) => (
+              <span 
+                key={index} 
+                style={{ 
+                  color: index % 2 === 0 ? '#FFFFFF' : '#FF6B00',
+                  display: 'inline-block'
+                }}
+              >
+                {char}
+              </span>
+            ))}
+          </span>
+          <Image
+            src="/img/padel-icon.png"
+            alt="Logo pádel"
+            width={48}
+            height={48}
+            style={{ marginRight: "0.7rem" }}
+            priority
+          />
         </Link>
 
         <nav className={styles.nav}>

@@ -1,21 +1,21 @@
 .card {
-    background: linear-gradient(145deg, #afcc51, #222223);
+    background: #1A1A1A;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 
         0 4px 20px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.1);
+        0 0 0 1px rgba(255, 107, 0, 0.1);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 107, 0, 0.1);
 }
 
 .card:hover {
     transform: translateY(-8px);
     box-shadow: 
-        0 12px 30px rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.2);
-    background: linear-gradient(145deg, #ce4ed9, #6fd198);
+        0 12px 30px rgb(115, 68, 2),
+        0 0 0 1px rgba(206, 121, 10, 0.938);
+    background: #2A2A2A;
 }
 
 .imageContainer {
@@ -26,7 +26,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(145deg, #f65124, #2e2f30);
+    background: #000000;
 }
 
 .image {
@@ -44,14 +44,14 @@
     position: absolute;
     top: 1rem;
     left: 1rem;
-    background: linear-gradient(135deg, #98C9A3, #1A4D3C);
+    background: #FF6B00;
     color: white;
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-weight: 600;
     font-size: 0.875rem;
     z-index: 1;
-    box-shadow: 0 2px 8px rgba(26, 77, 60, 0.3);
+    box-shadow: 0 2px 8px rgba(255, 107, 0, 0.3);
     backdrop-filter: blur(4px);
 }
 
@@ -59,20 +59,20 @@
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background: linear-gradient(135deg, #E31837, #c41530);
+    background: #FF6B00;
     color: white;
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-weight: 600;
     font-size: 0.875rem;
     z-index: 1;
-    box-shadow: 0 2px 8px rgba(227, 24, 55, 0.3);
+    box-shadow: 0 2px 8px rgba(255, 107, 0, 0.3);
     backdrop-filter: blur(4px);
 }
 
 .content {
     padding: 1.5rem;
-    background: linear-gradient(145deg, #191818, #2d2e2f);
+    background: #1A1A1A;
     position: relative;
 }
 
@@ -83,7 +83,7 @@
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(26, 77, 60, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 107, 0, 0.1), transparent);
 }
 
 .title {
@@ -97,7 +97,6 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .priceContainer {
@@ -110,14 +109,13 @@
 .price {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #ffffff;
+    color: #FF6B00;
     letter-spacing: -0.5px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .originalPrice {
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: #A3A3A3;
     text-decoration: line-through;
     position: relative;
 }
@@ -129,16 +127,15 @@
     right: 0;
     top: 50%;
     height: 1px;
-    background: rgba(255, 255, 255, 0.7);
+    background: #A3A3A3;
     transform: rotate(-5deg);
 }
 
 .discountPrice {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #ffd700;
+    color: #FF6B00;
     letter-spacing: -0.5px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* Efecto de brillo al hover */
@@ -149,7 +146,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 50%);
+    background: linear-gradient(135deg, rgba(255, 107, 0, 0.1) 0%, rgba(255, 107, 0, 0) 50%);
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;

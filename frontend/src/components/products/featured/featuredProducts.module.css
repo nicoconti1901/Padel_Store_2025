@@ -1,7 +1,8 @@
 .featuredSection {
     padding: 2rem;
-    max-width: 1400px;
+    max-width: 100%;
     margin: 0 auto;
+    background: #989696;
 }
 
 .title {

@@ -24,8 +24,11 @@ export default function ProductList({ products, loading, error }: ProductListPro
     }
 
     return (
+        
         <div className={styles.productList}>
+            
             {products.map((product) => (
+                
                 <ProductCard 
                     key={`${product.categoria}-${product.id}`} 
                     product={product} 

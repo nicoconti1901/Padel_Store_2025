@@ -18,6 +18,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: nowrap;
+  gap: 2rem;
 }
 
 .logo {
@@ -31,12 +33,24 @@
   text-transform: uppercase;
   letter-spacing: -1px;
   position: relative;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .logoText {
   display: inline-block;
   font-weight: 900;
   letter-spacing: 2px;
+  min-width: 0;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: unset;
+  flex-shrink: 1;
+}
+
+.logoImgEnd {
+  flex-shrink: 0;
 }
 
 .logoImage {
@@ -80,13 +94,15 @@
   z-index: -1;
 }
 
-.navLink:hover {
+.navLink:hover,
+.navLink.active {
   transform: translateY(-2px);
   border-color: rgba(255, 107, 0, 0.3);
   box-shadow: 0 4px 15px rgba(255, 107, 0, 0.2);
 }
 
-.navLink:hover::before {
+.navLink:hover::before,
+.navLink.active::before {
   opacity: 1;
 }
 
@@ -102,10 +118,154 @@
   box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
 }
 
+.rightSection {
+  display: flex;
+  align-items: center;
+  margin-left: 2rem;
+  gap: 1rem;
+}
+
+.hamburgerButton {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 1001;
+}
+
+.hamburgerIcon {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--color-text);
+  position: relative;
+  transition: all 0.3s ease;
+  margin: 0 auto;
+}
+
+.hamburgerIcon::before,
+.hamburgerIcon::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 24px;
+  height: 2px;
+  background: var(--color-text);
+  transition: all 0.3s ease;
+}
+
+.hamburgerIcon::before {
+  top: 0;
+  transform: translateY(-8px);
+}
+
+.hamburgerIcon::after {
+  top: 0;
+  transform: translateY(8px);
+}
+
+.hamburgerButton.active .hamburgerIcon {
+  background: transparent;
+}
+
+.hamburgerButton.active .hamburgerIcon::before {
+  transform: rotate(45deg);
+}
+
+.hamburgerButton.active .hamburgerIcon::after {
+  transform: rotate(-45deg);
+}
+
+.mobileNav {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 80%;
+  max-width: 300px;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 5rem 2rem 2rem;
+  transition: right 0.3s ease;
+  z-index: 1000;
+  box-shadow: -4px 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.mobileNav.active {
+  right: 0;
+}
+
+.mobileNavList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.mobileNavLink {
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 1.2rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: var(--gradient-surface);
+  border: 1px solid rgba(255, 107, 0, 0.1);
+}
+
+.mobileNavLink:hover,
+.mobileNavLink.active {
+  background: var(--gradient-primary);
+  transform: translateX(5px);
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  z-index: 999;
+}
+
+.overlay.active {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .hamburgerButton {
+    display: block;
+    margin-right: 0.5rem;
+  }
+  .nav {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .mobileNav {
+    width: 100%;
+    max-width: none;
+  }
+
+  .mobileNavList {
+    gap: 1rem;
+  }
+
+  .mobileNavLink {
+    font-size: 1.1rem;
+    padding: 0.6rem;
+  }
+}
+
 .actions {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 0.5rem;
 }
 
 .cartButton {
@@ -181,34 +341,184 @@
   to { transform: rotate(360deg); }
 }
 
-@media (max-width: 768px) {
+/* Media queries para diferentes tamaños de pantalla */
+@media (max-width: 1200px) {
   .container {
-    padding: 1rem;
+    max-width: 1140px;
+    padding: 1rem 1.5rem;
   }
 
-  .nav {
-    gap: 1rem;
+  .logoImage {
+    width: 240px;
+    height: 55px;
   }
 
   .navLink {
     font-size: 1rem;
-    padding: 0.6rem 1rem;
+    padding: 0.6rem 1.2rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .container {
+    max-width: 960px;
+    padding: 1rem;
   }
 
-  .logo {
-    font-size: 2rem;
+  .logoImage {
+    width: 220px;
+    height: 50px;
   }
 
-  .actions {
-    gap: 0.75rem;
+  .nav {
+    gap: 1.5rem;
+  }
+
+  .navLink {
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
   }
 
   .authButton {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 0.6rem;
   }
 
-  .authButton span {
-    display: none;
+  .nav {
+    gap: 0.5rem;
+  }
+
+  .navLink {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .logo {
+    font-size: 1.6rem;
+  }
+
+  .logoImage {
+    width: 180px;
+    height: 40px;
+  }
+
+  .actions {
+    gap: 0.5rem;
+  }
+
+  .authButton {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
+  }
+
+  .cartButton {
+    padding: 0.4rem;
+  }
+
+  .cartCount {
+    font-size: 0.75rem;
+    min-width: 1.2rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .container {
+    padding: 0.5rem;
+  }
+
+  .nav {
+    gap: 0.3rem;
+  }
+
+  .navLink {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.5rem;
+  }
+
+  .logo {
+    font-size: 1.4rem;
+  }
+
+  .logoImage {
+    width: 160px;
+    height: 35px;
+  }
+
+  .actions {
+    gap: 0.3rem;
+  }
+
+  .authButton {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .cartButton {
+    padding: 0.3rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .container {
+    padding: 0.3rem 0.3rem;
+  }
+  .rightSection {
+    gap: 0.3rem;
+  }
+  .cartButton, .authButton {
+    padding: 0.3rem 0.3rem;
+  }
+  .hamburgerButton {
+    padding: 0.3rem;
+  }
+  .logoText {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 917px) and (min-width: 768px) {
+  .container {
+    gap: 1rem;
+    padding: 0.7rem 1rem;
+  }
+  .logo {
+    font-size: 1.5rem;
+  }
+  .logoText {
+    font-size: 1rem;
+  }
+  .logo img {
+    width: 32px !important;
+    height: 32px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 862px) and (min-width: 764px) {
+  .logoImgEnd {
+    display: none !important;
+  }
+}
+
+@media (max-width: 950px) {
+  .logoImgEnd {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1100px) {
+  .logoImgEnd {
+    display: none !important;
   }
 } 

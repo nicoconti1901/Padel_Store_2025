@@ -6,13 +6,16 @@ import styles from "./header.module.css"
 import { useRouter, usePathname } from 'next/navigation'
 import Image from "next/image"
 import { useState } from "react"
+import { useCart } from "@/hooks/use-cart"
 
 export function Header() {
   const { isAuthenticated, isAdmin, logout, isLoading } = useAuth()
+  const { items } = useCart()
   const router = useRouter()
   const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
   const isActive = (path: string) => pathname === path
 
   console.log('[Header Render] Is Loading:', isLoading, 'Is Authenticated:', isAuthenticated, 'Is Admin:', isAdmin)
@@ -112,9 +115,19 @@ export function Header() {
 
           <div className={styles.actions}>
             {!isAuthenticated && (
-              <button className={styles.cartButton} aria-label="Carrito de compras" style={{marginRight: '0.5rem'}}>
+              <Link 
+                href="/carrito" 
+                className={styles.cartButton} 
+                aria-label="Carrito de compras" 
+                style={{marginRight: '0.5rem', position: 'relative'}}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <ShoppingCart size={18} />
-              </button>
+                {itemCount > 0 && (
+                  <span className={styles.cartCount}>{itemCount}</span>
+                )}
+              </Link>
             )}
             {!isLoading && (
               isAuthenticated ? (
@@ -173,10 +186,22 @@ export function Header() {
             </Link>
           )}
           {!isAuthenticated && (
-            <Link href="/login" className={styles.mobileNavLink} onClick={closeMenu}>
-              <LogIn size={18} style={{ marginRight: '0.5rem' }} />
-              Ingresar
-            </Link>
+            <>
+              <Link 
+                href="/carrito" 
+                className={styles.mobileNavLink} 
+                onClick={closeMenu}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <ShoppingCart size={18} style={{ marginRight: '0.5rem' }} />
+                Carrito {itemCount > 0 && `(${itemCount})`}
+              </Link>
+              <Link href="/login" className={styles.mobileNavLink} onClick={closeMenu}>
+                <LogIn size={18} style={{ marginRight: '0.5rem' }} />
+                Ingresar
+              </Link>
+            </>
           )}
           {isAuthenticated && (
             <button onClick={handleLogout} className={styles.mobileNavLink}>

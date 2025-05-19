@@ -1,0 +1,240 @@
+.cart {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: calc(100vh - 200px); /* Ajustar según la altura del header y footer */
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.emptyCart {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem;
+    background: var(--gradient-surface);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 107, 0, 0.1);
+    margin: 2rem 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.emptyCart h2 {
+    font-size: 2.5rem;
+    color: var(--color-text);
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.emptyCart p {
+    font-size: 1.2rem;
+    color: var(--color-text);
+    margin-bottom: 2.5rem;
+    max-width: 400px;
+}
+
+.buttonContainer {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.continueShopping {
+    flex: 1;
+    display: inline-block;
+    padding: 1rem;
+    background: var(--gradient-surface);
+    color: var(--color-text);
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 107, 0, 0.1);
+}
+
+.continueShopping:hover {
+    transform: translateY(-2px);
+    background: var(--gradient-surface-hover);
+    border-color: rgba(255, 107, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(255, 107, 0, 0.1);
+}
+
+.itemsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.cartItem {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: #1A1A1A;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 107, 0, 0.1);
+}
+
+.itemImage {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.itemDetails {
+    flex: 1;
+}
+
+.itemDetails h3 {
+    color: white;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.priceContainer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.price {
+    color: #FF6B00;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.originalPrice {
+    color: #666;
+    text-decoration: line-through;
+    font-size: 0.9rem;
+}
+
+.discountPrice {
+    color: #FF6B00;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.quantityControls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quantityButton {
+    background: #2A2A2A;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.quantityButton:hover:not(:disabled) {
+    background: #FF6B00;
+}
+
+.quantityButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.quantity {
+    color: white;
+    min-width: 30px;
+    text-align: center;
+}
+
+.removeButton {
+    background: var(--gradient-surface);
+    border: 1px solid rgba(255, 107, 0, 0.1);
+    color: var(--color-text);
+    cursor: pointer;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.removeButton:hover {
+    background: var(--gradient-surface-hover);
+    border-color: rgba(255, 107, 0, 0.3);
+    transform: translateY(-2px);
+    color: #FF0000;
+}
+
+.summary {
+    margin-top: 2rem;
+    background: #1A1A1A;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 107, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.total {
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.checkoutButton {
+    flex: 1;
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 107, 0, 0.3);
+}
+
+.checkoutButton:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #FF8533, #FF6B00);
+    box-shadow: 0 4px 15px rgba(255, 107, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+    .cartItem {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .itemImage {
+        width: 150px;
+        height: 150px;
+    }
+
+    .priceContainer {
+        justify-content: center;
+    }
+
+    .quantityControls {
+        justify-content: center;
+    }
+
+    .removeButton {
+        margin-top: 1rem;
+    }
+} 

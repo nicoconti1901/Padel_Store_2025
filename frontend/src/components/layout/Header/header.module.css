@@ -316,15 +316,19 @@
 }
 
 .cartCount {
-  background: var(--gradient-primary);
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #FF6B00;
   color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 8px;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  min-width: 1.5rem;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(255, 107, 0, 0.3);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .loadingSpinner {

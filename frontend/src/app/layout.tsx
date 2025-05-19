@@ -21,13 +21,11 @@ export default function RootLayout({
     <html lang="es">
       <body className={inter.className}>
         <AuthProvider>
-          <div className="min-h-screen flex flex-col">
-            <Header />
-            <main className="flex-grow">
-              {children}
-            </main>
-            <Footer />
-          </div>
+          <Header />
+          <main style={{ minHeight: 'calc(100vh - 200px)', paddingTop: '80px' }}>
+            {children}
+          </main>
+          <Footer />
         </AuthProvider>
       </body>
     </html>

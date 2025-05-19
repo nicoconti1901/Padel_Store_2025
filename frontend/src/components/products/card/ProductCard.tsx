@@ -3,13 +3,14 @@
 import { Product } from '@/types/product';
 import styles from './productCard.module.css';
 import Image from 'next/image';
+import { useCart } from '@/hooks/use-cart';
 
 interface ProductCardProps {
     product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-    console.log('ProductCard data:', product);
+    const { addItem } = useCart();
     
     const {
         marca,
@@ -22,6 +23,12 @@ export default function ProductCard({ product }: ProductCardProps) {
     } = product;
 
     const discountedPrice = en_oferta ? precio * (1 - descuento / 100) : precio;
+
+    const handleAddToCart = () => {
+        if (product && product.id) {
+            addItem(product);
+        }
+    };
 
     const getCloudinaryImageUrl = (imageUrl: string): string => {
         // Si imageUrl es una ruta local (comienza con '/'), como '/placeholder.svg',
@@ -73,6 +80,27 @@ export default function ProductCard({ product }: ProductCardProps) {
                         <span className={styles.price}>${precio}</span>
                     )}
                 </div>
+                <button 
+                    onClick={handleAddToCart}
+                    className={styles.addToCartButton}
+                >
+                    <svg 
+                        className={styles.cartIcon}
+                        width="20" 
+                        height="20" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="2" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                    >
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    Agregar al carrito
+                </button>
             </div>
         </div>
     );

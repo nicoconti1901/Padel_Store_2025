@@ -17,7 +17,7 @@ interface ProductListProps {
 export default function ProductList({ products, loading, error }: ProductListProps) {
     const [filters, setFilters] = useState<{
         search: string;
-        category: string;
+        category: number | '';
         sortBy: SortOption;
     }>({ 
         search: '', 
@@ -27,9 +27,9 @@ export default function ProductList({ products, loading, error }: ProductListPro
 
     const filteredProducts = useMemo(() => {
         let result = products.filter(product => {
-            const matchesSearch = product.modelo.toLowerCase().includes(filters.search.toLowerCase()) ||
-                                (product.marca?.toLowerCase() || '').includes(filters.search.toLowerCase());
-            const matchesCategory = !filters.category || product.categoria === filters.category;
+            const matchesSearch = product.nombre.toLowerCase().includes(filters.search.toLowerCase()) ||
+                                (product.marca_nombre?.toLowerCase() || '').includes(filters.search.toLowerCase());
+            const matchesCategory = !filters.category || product.categoria_id === filters.category;
             return matchesSearch && matchesCategory;
         });
 
@@ -49,8 +49,8 @@ export default function ProductList({ products, loading, error }: ProductListPro
     }, [products, filters]);
 
     const categories = useMemo(() => {
-        const uniqueCategories = new Set(products.map(product => product.categoria));
-        return Array.from(uniqueCategories);
+        const uniqueCategories = new Set(products.map(product => product.categoria_id));
+        return Array.from(uniqueCategories).map(id => id.toString());
     }, [products]);
 
     if (loading) {
@@ -74,7 +74,7 @@ export default function ProductList({ products, loading, error }: ProductListPro
             <div className={styles.productList}>
                 {filteredProducts.map((product) => (
                     <ProductCard 
-                        key={`${product.categoria}-${product.id}`} 
+                        key={`${product.categoria_id}-${product.id}`} 
                         product={product} 
                     />
                 ))}

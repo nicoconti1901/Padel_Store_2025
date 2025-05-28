@@ -24,27 +24,47 @@ export interface BaseProduct extends RowDataPacket {
 
 export interface Paleta extends BaseProduct {
     // Si en el futuro hay campos específicos, agrégalos aquí
+    forma: string;
+    nucleo: string;
+    marco: string;
+    peso: number;
+    balance: string;
+    grosor: number;
+
 }
 
 export interface Indumentaria extends BaseProduct {
     tipo: string;
     talle: string;
+    material: string;
+    color: string;
+    genero: string;
+    temporada: string;
 }
 
 export interface Accesorio extends BaseProduct {
     tipo: string;
+    material: string;
+    dimensiones: string;
+    peso: number;
+    color: string;
 }
 
 export type Product = Paleta | Indumentaria | Accesorio;
 
 export class ProductModel {
     static async findAll(): Promise<Product[]> {
-        // Traer todos los productos, incluyendo los datos específicos de cada categoría
-        // Unir con marcas y categorías
         const [rows] = await db.query<RowDataPacket[]>(
             `SELECT p.*, m.nombre as marca_nombre, c.nombre as categoria_nombre,
-                i.tipo as indumentaria_tipo, i.talle as indumentaria_talle,
-                a.tipo as accesorio_tipo
+                i.tipo as indumentaria_tipo, i.talle as indumentaria_talle, 
+                i.material as indumentaria_material, i.color as indumentaria_color,
+                i.genero as indumentaria_genero, i.temporada as indumentaria_temporada,
+                a.tipo as accesorio_tipo, a.material as accesorio_material,
+                a.dimensiones as accesorio_dimensiones, a.peso as accesorio_peso,
+                a.color as accesorio_color,
+                pa.forma as paleta_forma, pa.nucleo as paleta_nucleo,
+                pa.marco as paleta_marco, pa.peso as paleta_peso,
+                pa.balance as paleta_balance, pa.grosor as paleta_grosor
             FROM productos p
             LEFT JOIN marcas m ON p.marca_id = m.id
             LEFT JOIN categorias c ON p.categoria_id = c.id
@@ -52,39 +72,57 @@ export class ProductModel {
             LEFT JOIN accesorios a ON p.id = a.producto_id
             LEFT JOIN paletas pa ON p.id = pa.producto_id`
         );
-        // Mapear los resultados para devolver el tipo correcto
         return rows.map((row: any) => {
             if (row.categoria_nombre === 'indumentaria') {
                 return {
                     ...row,
                     tipo: row.indumentaria_tipo,
-                    talle: row.indumentaria_talle
+                    talle: row.indumentaria_talle,
+                    material: row.indumentaria_material,
+                    color: row.indumentaria_color,
+                    genero: row.indumentaria_genero,
+                    temporada: row.indumentaria_temporada
                 };
             } else if (row.categoria_nombre === 'accesorios') {
                 return {
                     ...row,
-                    tipo: row.accesorio_tipo
+                    tipo: row.accesorio_tipo,
+                    material: row.accesorio_material,
+                    dimensiones: row.accesorio_dimensiones,
+                    peso: row.accesorio_peso,
+                    color: row.accesorio_color
                 };
-            } else {
-                return row;
+            } else if (row.categoria_nombre === 'paletas') {
+                return {
+                    ...row,
+                    forma: row.paleta_forma,
+                    nucleo: row.paleta_nucleo,
+                    marco: row.paleta_marco,
+                    peso: row.paleta_peso,
+                    balance: row.paleta_balance,
+                    grosor: row.paleta_grosor
+                };
             }
+            return row;
         });
     }
 
     static async findById(id: number, categoria: ProductCategory): Promise<Product | null> {
-        // Traer un producto por id, incluyendo los datos específicos de la categoría
         let query = `SELECT p.*, m.nombre as marca_nombre, c.nombre as categoria_nombre`;
         let join = '';
         let selectExtras = '';
+        
         if (categoria === 'indumentaria') {
-            selectExtras = ', i.tipo, i.talle';
+            selectExtras = ', i.tipo, i.talle, i.material, i.color, i.genero, i.temporada';
             join = 'LEFT JOIN indumentaria i ON p.id = i.producto_id';
         } else if (categoria === 'accesorios') {
-            selectExtras = ', a.tipo';
+            selectExtras = ', a.tipo, a.material, a.dimensiones, a.peso, a.color';
             join = 'LEFT JOIN accesorios a ON p.id = a.producto_id';
         } else if (categoria === 'paletas') {
+            selectExtras = ', pa.forma, pa.nucleo, pa.marco, pa.peso, pa.balance, pa.grosor';
             join = 'LEFT JOIN paletas pa ON p.id = pa.producto_id';
         }
+
         const [rows] = await db.query<Product[]>(
             `${query}${selectExtras}
             FROM productos p
@@ -94,15 +132,9 @@ export class ProductModel {
             WHERE p.id = ?`,
             [id]
         );
+        
         if (!rows[0]) return null;
-        const row: any = rows[0];
-        if (categoria === 'indumentaria') {
-            row.tipo = row.tipo;
-            row.talle = row.talle;
-        } else if (categoria === 'accesorios') {
-            row.tipo = row.tipo;
-        }
-        return row;
+        return rows[0];
     }
 
     static async findByCategory(categoria: ProductCategory): Promise<Product[]> {
@@ -134,15 +166,33 @@ export class ProductModel {
                 return {
                     ...row,
                     tipo: row.tipo,
-                    talle: row.talle
+                    talle: row.talle,
+                    material: row.material,
+                    color: row.color,
+                    genero: row.genero,
+                    temporada: row.temporada
                 };
             } else if (categoria === 'accesorios') {
                 return {
                     ...row,
-                    tipo: row.tipo
+                    tipo: row.tipo,
+                    material: row.material,
+                    dimensiones: row.dimensiones,
+                    peso: row.peso,
+                    color: row.color
+                };
+            } else if (categoria === 'paletas') {
+                return {
+                    ...row,
+                    forma: row.forma,
+                    nucleo: row.nucleo,
+                    marco: row.marco,
+                    peso: row.peso,
+                    balance: row.balance,
+                    grosor: row.grosor
                 };
             } else {
-                return row;
+                return row; 
             }
         });
     }
@@ -187,18 +237,41 @@ export class ProductModel {
         // 4. Insertar en la tabla de la categoría
         if (categoria === 'paletas') {
             await db.query(
-                'INSERT INTO paletas (producto_id) VALUES (?)',
-                [productoId]
+                'INSERT INTO paletas (producto_id, forma, nucleo, marco, peso, balance, grosor) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                [
+                    productoId,
+                    productData.forma,
+                    productData.nucleo,
+                    productData.marco,
+                    productData.peso,
+                    productData.balance,
+                    productData.grosor
+                ]
             );
         } else if (categoria === 'indumentaria') {
             await db.query(
-                'INSERT INTO indumentaria (producto_id, tipo, talle) VALUES (?, ?, ?)',
-                [productoId, productData.tipo, productData.talle]
+                'INSERT INTO indumentaria (producto_id, tipo, talle, material, color, genero, temporada) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                [
+                    productoId,
+                    productData.tipo,
+                    productData.talle,
+                    productData.material,
+                    productData.color,
+                    productData.genero,
+                    productData.temporada
+                ]
             );
         } else if (categoria === 'accesorios') {
             await db.query(
-                'INSERT INTO accesorios (producto_id, tipo) VALUES (?, ?)',
-                [productoId, productData.tipo]
+                'INSERT INTO accesorios (producto_id, tipo, material, dimensiones, peso, color) VALUES (?, ?, ?, ?, ?, ?)',
+                [
+                    productoId,
+                    productData.tipo,
+                    productData.material,
+                    productData.dimensiones,
+                    productData.peso,
+                    productData.color
+                ]
             );
         }
 
@@ -254,16 +327,17 @@ export class ProductModel {
         }
         // 2. Actualizar datos específicos en la tabla de la categoría
         if (categoria === 'indumentaria') {
-            const indFields = [];
-            const indValues = [];
-            if ('tipo' in product) {
-                indFields.push('tipo = ?');
-                indValues.push((product as any).tipo);
-            }
-            if ('talle' in product) {
-                indFields.push('talle = ?');
-                indValues.push((product as any).talle);
-            }
+            const indFields: string[] = [];
+            const indValues: any[] = [];
+            const indSpecificFields = ['tipo', 'talle', 'material', 'color', 'genero', 'temporada'];
+            
+            indSpecificFields.forEach(field => {
+                if (field in product) {
+                    indFields.push(`${field} = ?`);
+                    indValues.push((product as any)[field]);
+                }
+            });
+
             if (indFields.length > 0) {
                 await db.query(
                     `UPDATE indumentaria SET ${indFields.join(', ')} WHERE producto_id = ?`,
@@ -271,10 +345,39 @@ export class ProductModel {
                 );
             }
         } else if (categoria === 'accesorios') {
-            if ('tipo' in product) {
+            const accFields: string[] = [];
+            const accValues: any[] = [];
+            const accSpecificFields = ['tipo', 'material', 'dimensiones', 'peso', 'color'];
+            
+            accSpecificFields.forEach(field => {
+                if (field in product) {
+                    accFields.push(`${field} = ?`);
+                    accValues.push((product as any)[field]);
+                }
+            });
+
+            if (accFields.length > 0) {
                 await db.query(
-                    `UPDATE accesorios SET tipo = ? WHERE producto_id = ?`,
-                    [product.tipo, id]
+                    `UPDATE accesorios SET ${accFields.join(', ')} WHERE producto_id = ?`,
+                    [...accValues, id]
+                );
+            }
+        } else if (categoria === 'paletas') {
+            const palFields: string[] = [];
+            const palValues: any[] = [];
+            const palSpecificFields = ['forma', 'nucleo', 'marco', 'peso', 'balance', 'grosor'];
+            
+            palSpecificFields.forEach(field => {
+                if (field in product) {
+                    palFields.push(`${field} = ?`);
+                    palValues.push((product as any)[field]);
+                }
+            });
+
+            if (palFields.length > 0) {
+                await db.query(
+                    `UPDATE paletas SET ${palFields.join(', ')} WHERE producto_id = ?`,
+                    [...palValues, id]
                 );
             }
         }

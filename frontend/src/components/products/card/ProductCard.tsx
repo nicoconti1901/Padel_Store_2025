@@ -13,13 +13,14 @@ export default function ProductCard({ product }: ProductCardProps) {
     const { addItem } = useCart();
     
     const {
-        marca,
-        modelo,
+        nombre,
         precio,
+        precio_original,
         imagen,
         es_nuevo,
         en_oferta,
-        descuento
+        descuento,
+        marca_nombre
     } = product;
 
     const discountedPrice = en_oferta ? precio * (1 - descuento / 100) : precio;
@@ -59,7 +60,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             <div className={styles.imageContainer}>
                 <Image
                     src={getCloudinaryImageUrl(imagen || '/placeholder.svg')}
-                    alt={`${marca} ${modelo}`}
+                    alt={`${marca_nombre} ${nombre}`}
                     width={300}
                     height={300}
                     className={styles.image}
@@ -69,11 +70,11 @@ export default function ProductCard({ product }: ProductCardProps) {
                 {en_oferta && <span className={styles.discountBadge}>{descuento}% OFF</span>}
             </div>
             <div className={styles.content}>
-                <h3 className={styles.title}>{modelo} • {marca}</h3>
+                <h3 className={styles.title}>{nombre} • {marca_nombre}</h3>
                 <div className={styles.priceContainer}>
                     {en_oferta ? (
                         <>
-                            <span className={styles.originalPrice}>${precio}</span>
+                            <span className={styles.originalPrice}>${precio_original}</span>
                             <span className={styles.discountPrice}>${discountedPrice.toFixed(2)}</span>
                         </>
                     ) : (

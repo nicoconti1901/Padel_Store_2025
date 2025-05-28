@@ -6,7 +6,7 @@ import styles from './productFilter.module.css';
 interface ProductFilterProps {
     onFilterChange: (filters: { 
         search: string; 
-        category: string;
+        category: number | '';
         sortBy: 'default' | 'price_asc' | 'price_desc';
     }) => void;
     categories: string[];
@@ -14,7 +14,7 @@ interface ProductFilterProps {
 
 export default function ProductFilter({ onFilterChange, categories }: ProductFilterProps) {
     const [search, setSearch] = useState('');
-    const [category, setCategory] = useState('');
+    const [category, setCategory] = useState<number | ''>('');
     const [sortBy, setSortBy] = useState<'default' | 'price_asc' | 'price_desc'>('default');
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,7 +24,7 @@ export default function ProductFilter({ onFilterChange, categories }: ProductFil
     };
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newCategory = e.target.value;
+        const newCategory = e.target.value ? parseInt(e.target.value) : '';
         setCategory(newCategory);
         onFilterChange({ search, category: newCategory, sortBy });
     };

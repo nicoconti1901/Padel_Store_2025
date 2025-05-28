@@ -13,10 +13,12 @@ async function handleResponse<T>(response: Response): Promise<T> {
 
 // Función auxiliar para transformar los datos del producto
 const transformProduct = (product: any, categoria: ProductCategory): Product => {
+  console.log('Transformando producto:', product.nombre, 'con categoría:', categoria);
+  
   const baseProduct = {
-    id: product._id || product.id,
-    marca: product.marca_nombre || product.marca?.nombre || product.marca || '',
-    modelo: product.nombre || product.modelo || '',
+    id: product.id,
+    nombre: product.nombre,
+    descripcion: product.descripcion,
     precio: Number(product.precio),
     precio_original: Number(product.precio_original) || Number(product.precio),
     descuento: Number(product.descuento) || 0,
@@ -24,30 +26,61 @@ const transformProduct = (product: any, categoria: ProductCategory): Product => 
     en_oferta: Boolean(product.en_oferta),
     stock: Number(product.stock) || 0,
     imagen: product.imagen || '/placeholder.svg',
-    caracteristicas: product.caracteristicas || '',
-    categoria: product.categoria || categoria,
-    marca_id: product.marca?._id || product.marca_id,
-    categoria_id: product.categoria?._id || product.categoria_id,
-    fecha_creacion: product.fecha_creacion || new Date().toISOString()
+    marca_id: product.marca_id,
+    categoria_id: product.categoria_id,
+    created_at: product.created_at,
+    updated_at: product.updated_at,
+    marca_nombre: product.marca_nombre,
+    categoria_nombre: product.categoria_nombre
   };
 
-  const productCategoria = baseProduct.categoria.toLowerCase();
-  switch (productCategoria) {
-    case 'paletas':
-      return baseProduct as Paleta;
-    case 'indumentaria':
-      return {
-        ...baseProduct,
-        tipo: product.tipo || '',
-        talle: product.talle || ''
-      } as Indumentaria;
-    case 'accesorios':
-      return {
-        ...baseProduct,
-        tipo: product.tipo || ''
-      } as Accesorio;
-    default:
-      throw new Error(`Categoría no válida: ${productCategoria}`);
+  try {
+    switch (categoria) {
+      case 'paletas':
+        return {
+          ...baseProduct,
+          categoria: 'paletas',
+          forma: product.forma || '',
+          nucleo: product.nucleo || '',
+          marco: product.marco || '',
+          peso: Number(product.peso) || 0,
+          balance: product.balance || '',
+          grosor: Number(product.grosor) || 0
+        } as Paleta;
+      case 'indumentaria':
+        return {
+          ...baseProduct,
+          categoria: 'indumentaria',
+          tipo: product.tipo || '',
+          talle: product.talle || '',
+          material: product.material || '',
+          color: product.color || '',
+          genero: product.genero || '',
+          temporada: product.temporada || ''
+        } as Indumentaria;
+      case 'accesorios':
+        return {
+          ...baseProduct,
+          categoria: 'accesorios',
+          tipo: product.tipo || '',
+          material: product.material || '',
+          dimensiones: product.dimensiones || '',
+          peso: Number(product.peso) || 0,
+          color: product.color || ''
+        } as Accesorio;
+      default:
+        console.warn('Categoría no reconocida:', categoria, 'para producto:', product.nombre);
+        return {
+          ...baseProduct,
+          categoria: 'paletas' // Categoría por defecto
+        } as Product;
+    }
+  } catch (error) {
+    console.error('Error transformando producto:', product.nombre, error);
+    return {
+      ...baseProduct,
+      categoria: 'paletas' // Categoría por defecto en caso de error
+    } as Product;
   }
 };
 
@@ -104,41 +137,33 @@ export const productService = {
   },
 
   // Crear un nuevo producto
-  async createProduct(product: Omit<Product, 'id'>, categoria: ProductCategory): Promise<Product> {
+  async createProduct(productData: Omit<Product, 'id'>, category: ProductCategory): Promise<Product> {
     try {
-      // Transformar los datos para que coincidan con el backend
-      const productData = {
-        nombre: product.modelo, // Siempre usar modelo como nombre
-        descripcion: product.caracteristicas, // Convertir caracteristicas a descripcion
-        precio: product.precio,
-        precio_original: product.precio_original,
-        descuento: product.descuento,
-        es_nuevo: product.es_nuevo,
-        en_oferta: product.en_oferta,
-        stock: product.stock,
-        imagen: product.imagen,
-        marca_id: product.marca_id, // Usar marca_id directamente
-        tipo: product.tipo,
-        talle: product.talle
+      const now = new Date().toISOString();
+      const data = {
+        ...productData,
+        categoria: category,
+        categoria_id: parseInt(category),
+        precio_original: productData.precio,
+        created_at: now,
+        updated_at: now
       };
 
-      console.log('Datos a enviar al backend:', productData); // Agregar log para debug
-
-      const response = await fetch(`${API_URL}/products/${categoria}`, {
+      const response = await fetch(`${API_URL}/products/${category}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify(productData),
+        body: JSON.stringify(data),
         credentials: 'include'
       });
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || 'Error al crear producto');
       }
-      const data = await response.json();
-      return transformProduct(data, categoria);
+      const dataCreated = await response.json();
+      return transformProduct(dataCreated, category);
     } catch (error) {
       console.error('Error al crear producto:', error);
       throw error;
@@ -146,23 +171,28 @@ export const productService = {
   },
 
   // Actualizar un producto
-  async updateProduct(id: string, product: Partial<Product>, categoria: ProductCategory): Promise<Product> {
+  async updateProduct(id: string, productData: Partial<Product>, category: ProductCategory): Promise<Product> {
     try {
-      const response = await fetch(`${API_URL}/products/${categoria}/${id}`, {
+      const data = {
+        ...productData,
+        updated_at: new Date().toISOString()
+      };
+
+      const response = await fetch(`${API_URL}/products/${category}/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify(product),
+        body: JSON.stringify(data),
         credentials: 'include'
       });
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || 'Error al actualizar producto');
       }
-      const data = await response.json();
-      return transformProduct(data, categoria);
+      const dataUpdated = await response.json();
+      return transformProduct(dataUpdated, category);
     } catch (error) {
       console.error('Error al actualizar producto:', error);
       throw error;
@@ -170,9 +200,9 @@ export const productService = {
   },
 
   // Eliminar un producto
-  async deleteProduct(id: string, categoria: ProductCategory): Promise<void> {
+  async deleteProduct(id: string, category: ProductCategory): Promise<void> {
     try {
-      const response = await fetch(`${API_URL}/products/${categoria}/${id}`, {
+      const response = await fetch(`${API_URL}/products/${category}/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -202,5 +232,34 @@ export const productService = {
       console.error('Error al obtener marcas:', error);
       throw error;
     }
-  }
+  },
+
+  async getAllProducts(): Promise<Product[]> {
+    try {
+      console.log('Llamando a getAllProducts...');
+      const response = await fetch(`${API_URL}/products/all`);
+      console.log('Respuesta recibida:', response.status);
+      
+      if (!response.ok) {
+        throw new Error('Error al obtener los productos');
+      }
+      
+      const data = await response.json();
+      console.log('Datos recibidos del backend:', JSON.stringify(data, null, 2));
+      
+      // Mapear los productos usando la categoría de la base de datos
+      const products = data.map((product: any) => {
+        // Usar la categoría de la base de datos
+        const categoria = product.categoria_nombre?.toLowerCase() || 'paletas';
+        console.log('Procesando producto:', product.nombre, 'con categoría de BD:', categoria);
+        return transformProduct(product, categoria as ProductCategory);
+      });
+
+      console.log('Productos procesados:', JSON.stringify(products, null, 2));
+      return products;
+    } catch (error) {
+      console.error('Error en getAllProducts:', error);
+      throw error;
+    }
+  },
 }; 

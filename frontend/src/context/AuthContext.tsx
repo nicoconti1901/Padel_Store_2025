@@ -110,29 +110,40 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const checkAuthStatus = async () => {
-    const token = localStorage.getItem('token');
-    console.log('Verificando estado de autenticación...');
-    console.log('Token presente:', !!token);
-
-    if (!token) {
-      console.log('No hay token, usuario no autenticado');
-      setUser(null);
-      setIsLoading(false);
-      return;
-    }
-
     try {
+      const token = localStorage.getItem('token');
+      console.log('Verificando estado de autenticación...');
+      console.log('Token presente:', !!token);
+
+      if (!token) {
+        console.log('No hay token, usuario no autenticado');
+        setUser(null);
+        setIsLoading(false);
+        return;
+      }
+
+      console.log('Enviando petición de verificación de estado...');
       const response = await fetch(`${config.apiUrl}/auth/status`, {
+        method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
         credentials: 'include'
       });
 
+      console.log('Respuesta recibida:', response.status);
+      
       if (response.ok) {
         const data = await response.json();
         console.log('Token válido, usuario autenticado:', data);
-        setUser(data.user);
+        if (data.user) {
+          setUser(data.user);
+        } else {
+          console.log('No se recibió información del usuario');
+          localStorage.removeItem('token');
+          setUser(null);
+        }
       } else {
         console.log('Token inválido o expirado');
         localStorage.removeItem('token');
@@ -149,7 +160,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     console.log('AuthProvider montado, verificando estado inicial...');
-    checkAuthStatus();
+    const initializeAuth = async () => {
+      await checkAuthStatus();
+    };
+    initializeAuth();
   }, []);
 
   const value = {
@@ -166,7 +180,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     isAuthenticated: value.isAuthenticated,
     isAdmin: value.isAdmin,
     user: value.user,
-    isAdminFromUser: user?.is_admin
+    isAdminFromUser: user?.is_admin,
+    isLoading
   });
 
   return (

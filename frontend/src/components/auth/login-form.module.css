@@ -4,41 +4,59 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 160px);
+  min-height: calc(100vh - 200px);
   padding: 2rem;
-  background: rgba(26, 77, 60, 0.05);
-  backdrop-filter: blur(8px);
+  background: var(--color-background);
+  background-image: url('/img/fondo10.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.loginContainer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
 }
 
 .loginForm {
   width: 100%;
   max-width: 400px;
   padding: 2.5rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--color-surface);
   border-radius: 16px;
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(8, 8, 8, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--color-border);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(152, 201, 163, 0.2);
-  margin-top: 90px;
+  position: relative;
+  z-index: 1;
 }
 
 .title {
-  color: #1A4D3C;
+  color: var(--color-text) !important;
   margin-bottom: 0.5rem;
   font-size: 1.8rem;
   font-weight: 700;
   text-align: center;
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  
 }
 
 .subtitle {
-  color: #666;
+  color: var(--color-text-light);
   margin-bottom: 2rem;
   font-size: 1rem;
   text-align: center;
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .formGroup {
@@ -48,59 +66,63 @@
 .formGroup label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #1A4D3C;
+  color: var(--color-text);
   font-weight: 500;
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .inputField {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 1px solid rgba(152, 201, 163, 0.3);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.9);
-  color: #333;
+  background: var(--color-surface-light);
+  color: var(--color-text);
 }
 
 .inputField:focus {
   outline: none;
-  border-color: #1A4D3C;
-  box-shadow: 0 0 0 3px rgba(152, 201, 163, 0.2);
-  background: white;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.2);
 }
 
 .inputField:disabled {
-  background-color: rgba(152, 201, 163, 0.1);
+  background-color: var(--color-surface);
   cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.inputField::placeholder {
+  color: var(--color-text-muted);
 }
 
 .submitButton {
   width: 100%;
   padding: 0.75rem;
-  background: #1A4D3C;
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--color-text);
   border: none;
   border-radius: 8px;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .submitButton:hover {
-  background: #143a2d;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(26, 77, 60, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 107, 0, 0.2);
 }
 
 .submitButton:disabled {
-  background-color: rgba(152, 201, 163, 0.5);
+  background: var(--color-surface-light);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+  opacity: 0.7;
 }
 
 .errorMessage {
@@ -109,9 +131,23 @@
   background-color: rgba(227, 24, 55, 0.1);
   border: 1px solid rgba(227, 24, 55, 0.2);
   border-radius: 8px;
-  color: #E31837;
+  color: var(--color-error);
   font-size: 0.875rem;
   text-align: center;
+}
+
+@media (max-width: 768px) {
+  .loginForm {
+    padding: 2rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
 }
 
 /* frontend/src/app/login/login-page.module.css */

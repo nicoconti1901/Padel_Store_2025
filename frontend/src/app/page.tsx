@@ -16,8 +16,8 @@ export default function Home() {
         <div className={styles.adminContent}>
           <h1>Panel de Administración</h1>
           <p>Bienvenido al panel de administración de la tienda de pádel.</p>
-          <Link href="/admin/products/create" className={styles.createButton}>
-            Crear Nuevo Producto
+          <Link href="/admin/products" className={styles.createButton}>
+            Gestionar Productos
           </Link>
         </div>
       </main>

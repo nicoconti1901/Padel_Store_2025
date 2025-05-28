@@ -1,6 +1,6 @@
 "use client"
 import Link from "next/link"
-import { ShoppingCart, LogOut, LogIn } from "lucide-react"
+import { ShoppingCart, LogOut, LogIn, Plus } from "lucide-react"
 import { useAuth } from "@/context/AuthContext"
 import styles from "./header.module.css"
 import { useRouter, usePathname } from 'next/navigation'
@@ -202,6 +202,12 @@ export function Header() {
                 Ingresar
               </Link>
             </>
+          )}
+          {isAuthenticated && (
+            <Link href="/admin/products/create" className={styles.mobileNavLink}>
+              <Plus size={18} style={{ marginRight: '0.5rem' }} />
+              Crear Producto
+            </Link>
           )}
           {isAuthenticated && (
             <button onClick={handleLogout} className={styles.mobileNavLink}>
